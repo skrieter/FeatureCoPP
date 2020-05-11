@@ -247,5 +247,5 @@ public class FeatureTable {
 		return count;
 	}
 	/** FeatureTree.featureExpressionToString() => Feature */
-	private static HashMap<String, FeatureModule> featureTable = new HashMap<String, FeatureModule>();
+	public static HashMap<String, FeatureModule> featureTable = new HashMap<String, FeatureModule>();
 }

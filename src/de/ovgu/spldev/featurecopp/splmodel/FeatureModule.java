@@ -671,7 +671,7 @@ public class FeatureModule implements Comparable<FeatureModule> {
 		/** source file where feature occurred */
 		private String filename;
 		/** enclosing feature occurrence */
-		private FeatureOccurrence enclosing;
+		public FeatureOccurrence enclosing;
 		/** textual line start */
 		private int lineStart;
 		/** textual line end */
@@ -682,7 +682,7 @@ public class FeatureModule implements Comparable<FeatureModule> {
 		 * individual feature tree - semantically but (maybe) not syntactically
 		 * equivalent to other occurrences!
 		 */
-		private FeatureTree ftree;
+		public FeatureTree ftree;
 		/** availability dead=true|selectable=false */
 		private boolean isDead;
 		/** nesting depth of role (1=top-lvl, 2=1 lvl below top-lvl,...) */
@@ -724,7 +724,7 @@ public class FeatureModule implements Comparable<FeatureModule> {
 	// private static Logger csp_logger;
 	// private static PrintStream csp_strm;
 	/** Gathers all feature related occurrences */
-	private ArrayList<FeatureOccurrence> featureOccurrences;
+	public ArrayList<FeatureOccurrence> featureOccurrences;
 	/** provides unique id for feature module */
 	private static long uid_count = 0;
 	/** unique numeric feature id */

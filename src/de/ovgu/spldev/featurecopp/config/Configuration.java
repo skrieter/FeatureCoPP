@@ -315,9 +315,9 @@ public class Configuration {
 
 	public static void purgeOutputDir(Logger logger, String outputDir)
 			throws Exception {
-		logger.writeInfo("Deleting " + outputDir + " ...");
-		logger.flushAllStrms();
-		Filesystem.deleteDirRecursive(outputDir, null);
+//		logger.writeInfo("Deleting " + outputDir + " ...");
+//		logger.flushAllStrms();
+//		Filesystem.deleteDirRecursive(outputDir, null);
 	}
 
 	private final static UserConf DEFAULT_CONFIG = new UserConf(

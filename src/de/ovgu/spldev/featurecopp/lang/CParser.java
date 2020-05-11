@@ -1,5 +1,7 @@
 package de.ovgu.spldev.featurecopp.lang;
 
+import java.io.InputStream;
+
 /**
  * TODO
  * - collect asm usage statistics
@@ -80,6 +82,13 @@ public class CParser extends CDTParser {
 	public CParser(boolean debug, final Path srcFile,
 			final Map<String, String> macroDefinitions) throws Exception {
 		super(srcFile, macroDefinitions);
+		this.debug = debug;
+		init();
+	}
+
+	public CParser(boolean debug, final InputStream src, final String filePath,
+			final Map<String, String> macroDefinitions) throws Exception {
+		super(src, filePath, macroDefinitions);
 		this.debug = debug;
 		init();
 	}

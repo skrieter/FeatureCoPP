@@ -221,7 +221,7 @@ public class Main {
 			System.err
 					.println(String.format("Fatal Error [%s]", e.getMessage()));
 			//e.printStackTrace();
-			System.exit(1);
+//			System.exit(1);
 		}
 		if (configs != null) {
 			// for every user conf, do respective processing

@@ -48,7 +48,7 @@ public class Merger implements Processable {
 			} catch(Exception e_del) {
 				logger.writeFail(e_del.getMessage());
 			}
-			System.exit(1);
+//			System.exit(1);
 			//e.printStackTrace();
 		}
 		

@@ -1,6 +1,7 @@
 package de.ovgu.spldev.featurecopp.lang.cpp;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.Enumeration;
@@ -81,8 +82,9 @@ public class FeatureScopeManager {
 	}
 
 	public void setCurrentOriginalSourceFile(
-			final Path currentOriginalSourceFile) {
+			final Path currentOriginalSourceFile, InputStream currentOriginalSourceFileContent) {
 		this.currentOriginalSourceFile = currentOriginalSourceFile;
+		this.currentOriginalSourceFileContent = currentOriginalSourceFileContent;
 	}
 
 	public void addIfElif(final Pattern requestPattern,
@@ -363,7 +365,7 @@ public class FeatureScopeManager {
 						// tu
 						// alread exists?)
 						CParser cParser = new CParser(false,
-								currentOriginalSourceFile, macroDefs);
+								currentOriginalSourceFileContent, currentOriginalSourceFile.toString(), macroDefs);
 						// analyze only line interval of this feature occurrence
 						CDTParser.Stats stats = null;
 						featureOccurrence.setStats(stats = cParser.analyze(
@@ -588,6 +590,7 @@ public class FeatureScopeManager {
 	 * location
 	 */
 	private Path currentOriginalSourceFile;
+	private InputStream currentOriginalSourceFileContent;
 	private Node prevTopMost;
 	/** direct access to basefile node */
 	private Node basefileBucket;

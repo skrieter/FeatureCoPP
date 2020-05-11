@@ -1,11 +1,12 @@
 package de.ovgu.spldev.featurecopp.lang.cpp;
 
+import java.io.BufferedInputStream;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -47,7 +48,26 @@ public final class CPPAnalyzer implements Processable {
 		}
 		logger.writeInfo("Processing " + fso);
 		try {
-			scan(fso);
+			scan(fso, new FileInputStream(fso.toString()));
+		} catch (Exception e) {
+			// smth regarding input file went wrong
+			logger.writeFail(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+
+	public void process(Path fso, InputStream in) {
+		// needed for output file placement
+		// this.currentFile = fso;
+
+		if(userConf.isBlackListed(fso)) {
+			logger.writeFail("Refused processing " + fso + " due to existing blacklist entry!");
+			return;
+		}
+		logger.writeInfo("Processing " + fso);
+		try {
+			scan(fso, in);
 		} catch (Exception e) {
 			// smth regarding input file went wrong
 			logger.writeFail(e.getMessage());
@@ -90,9 +110,10 @@ public final class CPPAnalyzer implements Processable {
 		this.requestExprPattern = userConf.getMacroPattern();
 	}
 
-	public void scan(final Path currentFile)
+	public void scan(final Path currentFile, final InputStream currentFileContent)
 			throws Exception {
-		cppScanner.setReader(currentReader = new InputStreamReader(new FileInputStream(currentFile.toString()), "UTF-8"));
+		currentReader = new InputStreamReader(new BufferedInputStream(currentFileContent, 8192), StandardCharsets.UTF_8.name());
+		cppScanner.setReader(currentReader);
 //		cppScanner.setReader(currentReader = new FileReader(currentFile
 //				.toFile()));
 		Token sym = null;
@@ -106,7 +127,7 @@ public final class CPPAnalyzer implements Processable {
 		Path dstFile = Filesystem.substitute(currentFile,
 				inputDir, outputDir);
 		featureScopeManager.addBasefile(dstFile);//foo/bar/baz.c -> foo_split/bar/baz.c
-		featureScopeManager.setCurrentOriginalSourceFile(currentFile);
+		featureScopeManager.setCurrentOriginalSourceFile(currentFile, currentFileContent);
 		try {
 			while ((sym = cppScanner.yylex()) != null) {			
 				currLine = sym.line;
@@ -224,7 +245,7 @@ public final class CPPAnalyzer implements Processable {
 				// COMPLETENESS! these errors (e.g. asymmetric directives) result in unsafe output, hence purging and exit
 				// NOT CRITICAL: errors related to C-Parsing and CSP -> handled in FeatureScopeManager.writeBackControlledCodeCache
 				Configuration.purgeOutputDir(logger, outputDir.toString());
-				System.exit(1);
+//				System.exit(1);
 //				logger.writeFail(String.format("%d conditional groups left behind due to errors!",
 //						featureScopeManager.numOfConditionalInProcess()));
 			}

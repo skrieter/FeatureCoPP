@@ -1,8 +1,11 @@
 package de.ovgu.spldev.featurecopp.lang;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -48,6 +51,22 @@ public abstract class CDTParser {
 		fileContent = FileContent.createForExternalFileLocation(srcFile
 				.toString());
 		init(macroDefinitions);
+	}
+
+	public CDTParser(final InputStream src, final String filePath,
+			final Map<String, String> macroDefinitions) throws IOException {
+		fileContent = FileContent.create(filePath, readFileContent(src));
+		init(macroDefinitions);
+	}
+
+	private char[] readFileContent(final InputStream src) throws IOException {
+		final ByteArrayOutputStream result = new ByteArrayOutputStream();
+		final byte[] buffer = new byte[8192];
+		int length;
+		while ((length = src.read(buffer)) != -1) {
+			result.write(buffer, 0, length);
+		}
+		return result.toString(StandardCharsets.UTF_8.name()).toCharArray();
 	}
 
 	/**
