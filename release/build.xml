@@ -6,7 +6,27 @@
 	<property name="dir.buildfile" value="." />
 	<property name="dir.workspace" value="${dir.buildfile}/../.." />
 	<property name="dir.jarfile" value="${dir.buildfile}" />
+	<property name="dir.src" value="${dir.buildfile}/../src" />
+	<property name="dir.lib" value="${dir.buildfile}/../lib" />
+	<property name="dir.build" value="${dir.buildfile}/../bin" />
+
 	<target name="create_run_jar">
+		<path id="classpath">
+			<fileset dir="${dir.lib}">
+				<include name="**/*.jar" />
+			</fileset>
+		</path>
+
+		<mkdir dir="${dir.build}" />
+		<javac
+			srcdir="${dir.src}"
+			destdir="${dir.build}"
+			classpathref="classpath"
+			debug="on" includeantruntime="false" fork="yes"
+			source="1.8" target="1.8">
+			<compilerarg value="-Xlint" />
+		</javac>
+
 		<jar destfile="${dir.jarfile}/FeatureCoPP.jar">
 			<manifest>
 				<attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader" />
