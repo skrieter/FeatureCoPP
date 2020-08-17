@@ -34,6 +34,9 @@ import de.ovgu.spldev.featurecopp.splmodel.IfndefTree;
  * @see Finder.Processable
  */
 public final class CPPAnalyzer implements Processable {
+	
+	public FeatureTable featureTable = new FeatureTable();
+	
 	/**
 	 * Performs a CPP related scan on give file system object.
 	 */
@@ -104,7 +107,7 @@ public final class CPPAnalyzer implements Processable {
 		this.userConf = userConf;
 		this.inputDir = userConf.getInputDirectory();
 		this.outputDir = userConf.getOutputDirectory();
-		this.featureScopeManager = new FeatureScopeManager(userConf.getModuleDirectory(), logger, userConf.getMacroPattern());
+		this.featureScopeManager = new FeatureScopeManager(userConf.getModuleDirectory(), logger, userConf.getMacroPattern(), featureTable);
 		this.cppScanner = new CPPScanner();
 		this.cppScanner.debug(false);
 		this.requestExprPattern = userConf.getMacroPattern();
@@ -261,14 +264,14 @@ public final class CPPAnalyzer implements Processable {
 			logger.writeInfo("--");
 			logger.writeInfo("Statistics:");
 			// @formatter:off
-			FeatureTable.DirectiveCount directiveCountTotal = FeatureTable.countRequestedDirectives(false);
-			FeatureTable.DirectiveCount directiveLoFTotal = FeatureTable.countRequestedDirectives(true);
-			FeatureTable.DirectiveCount directiveCountAbsence = FeatureTable.countRequestedSimpleAbsenceDirectives(false);
-			FeatureTable.DirectiveCount directiveLoFAbsence = FeatureTable.countRequestedSimpleAbsenceDirectives(true);
-			FeatureTable.DirectiveCount directiveCountPresence = FeatureTable.countRequestedSimplePresenceDirectives(false);
-			FeatureTable.DirectiveCount directiveLoFPresence = FeatureTable.countRequestedSimplePresenceDirectives(true);
-			FeatureTable.DirectiveCount directiveCountComplex = FeatureTable.countRequestedNonSimpleDirectives(false);
-			FeatureTable.DirectiveCount directiveLoFComplex = FeatureTable.countRequestedNonSimpleDirectives(true);
+			FeatureTable.DirectiveCount directiveCountTotal = featureTable.countRequestedDirectives(false);
+			FeatureTable.DirectiveCount directiveLoFTotal = featureTable.countRequestedDirectives(true);
+			FeatureTable.DirectiveCount directiveCountAbsence = featureTable.countRequestedSimpleAbsenceDirectives(false);
+			FeatureTable.DirectiveCount directiveLoFAbsence = featureTable.countRequestedSimpleAbsenceDirectives(true);
+			FeatureTable.DirectiveCount directiveCountPresence = featureTable.countRequestedSimplePresenceDirectives(false);
+			FeatureTable.DirectiveCount directiveLoFPresence = featureTable.countRequestedSimplePresenceDirectives(true);
+			FeatureTable.DirectiveCount directiveCountComplex = featureTable.countRequestedNonSimpleDirectives(false);
+			FeatureTable.DirectiveCount directiveLoFComplex = featureTable.countRequestedNonSimpleDirectives(true);
 			logger.writeInfo(String.format("VP:     [%6s||%13s|%13s|%13s|%13s||%13s]", "Total", 
 					"Analyzed", "Absence", "Presence", "CC", "Other"));
 			logger.writeInfo(String.format("        [%6s||%6s/%6s|%6s/%6s|%6s/%6s|%6s/%6s||%6s/%6s]",
@@ -350,12 +353,12 @@ public final class CPPAnalyzer implements Processable {
 			logger.writeInfo(String.format(Locale.US, "SD sum incl. #else=[%6d]", sd_new_sum));
 			logger.writeInfo(String.format(Locale.US, "SD missed:   delta=[%6d] (ratio=%.3f)", sd_new_sum - sd_old_sum, (1.0 - ((sd_old_sum * 1.0) / (sd_new_sum * 1.0)))));
 			// TANGLING DEGREE
-			long td_new_sum = FeatureTable.summarizeTanglingDegree(true);
-			long td_old_sum = FeatureTable.summarizeTanglingDegree(false);
+			long td_new_sum = featureTable.summarizeTanglingDegree(true);
+			long td_old_sum = featureTable.summarizeTanglingDegree(false);
 			logger.writeInfo("Tangling Degree (TD):");
 			logger.writeInfo(String.format(Locale.US, "TD sum excl. #else=[%6d]", td_old_sum));
-			Quadruple<String, String, String, Integer> tdMaxExcl = FeatureTable.getTDMax(false);
-			Quadruple<String, String, String, Integer> tdMaxIncl = FeatureTable.getTDMax(true);
+			Quadruple<String, String, String, Integer> tdMaxExcl = featureTable.getTDMax(false);
+			Quadruple<String, String, String, Integer> tdMaxIncl = featureTable.getTDMax(true);
 			logger.writeInfo(String.format("Most tangled feature expression=%s", tdMaxExcl.s));
 			logger.writeInfo(String.format("Keyword=%s, TD=%d", tdMaxExcl.t, tdMaxExcl.v));
 			logger.writeInfo(String.format("e.g., in file=%s", tdMaxExcl.u));
@@ -435,8 +438,8 @@ public final class CPPAnalyzer implements Processable {
 		return sb.toString();
 	}
 
-	public static long endifCount;
-	public static long textSize;
+	public long endifCount;
+	public long textSize;
 	/** current input stream for scanner (n per run) */
 	private Reader currentReader;
 	/** manages nested scope structure and FeatureModule information */

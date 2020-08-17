@@ -18,7 +18,7 @@ public class FeatureTable {
 	/**
 	 * Repeated program invocations in batch mode required re-initialization of feature map (per run).
 	 */
-	public static void reinit() {
+	public void reinit() {
 		featureTable.clear();
 		featureTable = null;
 		featureTable = new HashMap<String, FeatureModule>();
@@ -35,7 +35,7 @@ public class FeatureTable {
 	 * @return feature according to feature tree
 	 * @see FeatureTree.toString
 	 */
-	public static FeatureModule get(final FeatureTree ftree,
+	public FeatureModule get(final FeatureTree ftree,
 			final Path moduleDir) {
 		String featureExpression = ftree.featureExprToString();
 		FeatureModule feature = featureTable.get(featureExpression);
@@ -47,7 +47,7 @@ public class FeatureTable {
 		return feature;
 	}
 
-	public static void writeXmlTo(int indent, FileWriter fw) throws Exception {
+	public void writeXmlTo(int indent, FileWriter fw) throws Exception {
 		if (fw != null) {
 			// @formatter:off
 			fw.write(String.format(Locale.US, "%" + indent + "s<features count=\"%d\" requested=\"%d\" roles=\"%d\">%s", // linebreak
@@ -71,7 +71,7 @@ public class FeatureTable {
 	 * 
 	 * @return amount of currently mapped features
 	 */
-	public static int getFeatureCount() {
+	public int getFeatureCount() {
 		return featureTable.size();
 	}
 
@@ -80,7 +80,7 @@ public class FeatureTable {
 	 * 
 	 * @return requested feature count
 	 */
-	public static long calcNumberOfRequestedFeatures() {
+	public long calcNumberOfRequestedFeatures() {
 		long count = 0;
 		for (FeatureModule m : featureTable.values()) {
 			if (m.isRequested()) {
@@ -94,7 +94,7 @@ public class FeatureTable {
 	 * 
 	 * @return requested feature count
 	 */
-	public static long calcNumberOfRequestedRoles() {
+	public long calcNumberOfRequestedRoles() {
 		long count = 0;
 		for (FeatureModule m : featureTable.values()) {
 			if (m.isRequested()) {
@@ -109,14 +109,14 @@ public class FeatureTable {
 	 * 
 	 * @return requested role count
 	 */
-	public static long calcTotalNumberOfRoles() {
+	public long calcTotalNumberOfRoles() {
 		long count = 0;
 		for (FeatureModule m : featureTable.values()) {
 			count += m.numOfOccurrences();
 		}
 		return count;
 	}
-	public static class DirectiveCount {
+	public class DirectiveCount {
 		public long getIfCount() {
 			return ifCount;
 		}
@@ -153,7 +153,7 @@ public class FeatureTable {
 		private long elifCount;
 		private long elseCount;
 	}
-	public static DirectiveCount countRequestedDirectives(boolean useLoF) {
+	public DirectiveCount countRequestedDirectives(boolean useLoF) {
 		DirectiveCount count = new DirectiveCount();
 		for (FeatureModule m : featureTable.values()) {
 			if (m.isRequested()) {
@@ -166,7 +166,7 @@ public class FeatureTable {
 		}
 		return count;
 	}
-	public static DirectiveCount countRequestedSimpleAbsenceDirectives(boolean useLoF) {
+	public DirectiveCount countRequestedSimpleAbsenceDirectives(boolean useLoF) {
 		DirectiveCount count = new DirectiveCount();
 		for (FeatureModule m : featureTable.values()) {
 			if (m.isRequested() && m.isSimpleAbsence()) {
@@ -180,7 +180,7 @@ public class FeatureTable {
 		}
 		return count;
 	}
-	public static DirectiveCount countRequestedSimplePresenceDirectives(boolean useLoF) {
+	public DirectiveCount countRequestedSimplePresenceDirectives(boolean useLoF) {
 		DirectiveCount count = new DirectiveCount();
 		for (FeatureModule m : featureTable.values()) {
 			if (m.isRequested() && m.isSimplePresence()) {
@@ -194,7 +194,7 @@ public class FeatureTable {
 		}
 		return count;
 	}
-	public static DirectiveCount countRequestedNonSimpleDirectives(boolean useLoF) {
+	public DirectiveCount countRequestedNonSimpleDirectives(boolean useLoF) {
 		DirectiveCount count = new DirectiveCount();
 		for (FeatureModule m : featureTable.values()) {
 			if (m.isRequested() && ! m.isSimplePresence() && ! m.isSimpleAbsence()) {
@@ -214,7 +214,7 @@ public class FeatureTable {
 		public U u;
 		public V v;
 	}
-	public static Quadruple<String, String, String, Integer> getTDMax(boolean inclElse) {
+	public Quadruple<String, String, String, Integer> getTDMax(boolean inclElse) {
 		Quadruple<String, String, String, Integer> max = new Quadruple<>();
 		max.s = max.t = max.u =  "";
 		max.v = 0;
@@ -237,7 +237,7 @@ public class FeatureTable {
 		return max;
 	}
 
-	public static long summarizeTanglingDegree(boolean inclElse) {
+	public long summarizeTanglingDegree(boolean inclElse) {
 		long count = 0;
 		for (FeatureModule m : featureTable.values()) {
 			if (m.isRequested()) {
@@ -247,5 +247,5 @@ public class FeatureTable {
 		return count;
 	}
 	/** FeatureTree.featureExpressionToString() => Feature */
-	public static HashMap<String, FeatureModule> featureTable = new HashMap<String, FeatureModule>();
+	public HashMap<String, FeatureModule> featureTable = new HashMap<String, FeatureModule>();
 }

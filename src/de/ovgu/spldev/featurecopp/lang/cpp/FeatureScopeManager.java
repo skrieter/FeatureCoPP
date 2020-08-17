@@ -25,13 +25,14 @@ import de.ovgu.spldev.featurecopp.splmodel.FeatureTree;
 public class FeatureScopeManager {
 
 	public FeatureScopeManager(final Path moduleDir, Logger logger,
-			Pattern requestPattern) {
+			Pattern requestPattern, FeatureTable featureTable) {
 		FeatureModule.setLogger(logger);
 		this.exprParseDrv = new ExpressionParserDriver();
 		this.moduleDir = moduleDir;
 		this.featureScope = new Stack<Stack<Node>>();
 		this.logger = logger;
 		this.requestPattern = requestPattern;
+		this.featureTable = featureTable;
 	}
 
 	public void addBasefile(final Path currentSourceFile) {
@@ -237,7 +238,7 @@ public class FeatureScopeManager {
 			Node parent, int lineNumber, CPPAnalyzer.TYPE type)
 			throws IOException {
 		// perform feature look-up: already present otherwise created
-		FeatureModule featureModule = FeatureTable.get(featureTree, moduleDir);
+		FeatureModule featureModule = featureTable.get(featureTree, moduleDir);
 		// register feature occurrence within corresponding feature module
 		// (report-only)
 		// FeatureModule.FeatureOccurrence currfeatureOccurrence = featureModule
@@ -600,4 +601,6 @@ public class FeatureScopeManager {
 	private Logger logger;
 	/** a regular expression to simulate sd detection */
 	private Pattern requestPattern;
+	
+	private final FeatureTable featureTable;
 }

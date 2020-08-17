@@ -36,6 +36,7 @@
 			</manifest>
 			<!--<zipfileset src="jar-in-jar-loader.zip"/>-->
 			<fileset dir="${dir.workspace}/FeatureCoPP/bin" />
+		    <fileset dir="${dir.src}" includes="**/*.java"/>
 			<zipfileset dir="${dir.workspace}/FeatureCoPP/lib" includes="hamcrest-core-1.3.jar" />
 			<zipfileset dir="${dir.workspace}/FeatureCoPP/lib" includes="junit-4.12.jar" />
 			<zipfileset dir="${dir.workspace}/FeatureCoPP/lib" includes="jflex-1.6.1.jar" />

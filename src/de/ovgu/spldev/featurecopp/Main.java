@@ -1,15 +1,10 @@
 package de.ovgu.spldev.featurecopp;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 
 import de.ovgu.spldev.featurecopp.config.ConfigParserDriver;
 import de.ovgu.spldev.featurecopp.config.Configuration;
@@ -20,12 +15,9 @@ import de.ovgu.spldev.featurecopp.filesystem.Finder.TYPE;
 import de.ovgu.spldev.featurecopp.io.Merger;
 import de.ovgu.spldev.featurecopp.lang.cpp.CPPAnalyzer;
 import de.ovgu.spldev.featurecopp.lang.cpp.ExpressionLexer;
-import de.ovgu.spldev.featurecopp.lang.cpp.FeatureScopeManager;
 import de.ovgu.spldev.featurecopp.log.Logger;
 import de.ovgu.spldev.featurecopp.splmodel.ElifTree;
 import de.ovgu.spldev.featurecopp.splmodel.ElseTree;
-import de.ovgu.spldev.featurecopp.splmodel.FeatureModule;
-import de.ovgu.spldev.featurecopp.splmodel.FeatureTable;
 import de.ovgu.spldev.featurecopp.splmodel.IfTree;
 import de.ovgu.spldev.featurecopp.splmodel.IfdefTree;
 import de.ovgu.spldev.featurecopp.splmodel.IfndefTree;
@@ -106,11 +98,11 @@ public class Main {
 			// TODO
 			cppAnalyzer.showStatistics();
 			logger.writeInfo(String.format("Unique features  [Total/Requested]=[%6d/%6d]",
-					FeatureTable.getFeatureCount(),
-					FeatureTable.calcNumberOfRequestedFeatures()));
+					cppAnalyzer.featureTable.getFeatureCount(),
+					cppAnalyzer.featureTable.calcNumberOfRequestedFeatures()));
 			logger.writeInfo(String.format("Variation points [Total/Requested]=[%6d/%6d]",
-					FeatureTable.calcTotalNumberOfRoles(),
-					FeatureTable.calcNumberOfRequestedRoles()));
+					cppAnalyzer.featureTable.calcTotalNumberOfRoles(),
+					cppAnalyzer.featureTable.calcNumberOfRequestedRoles()));
 			logger.closeAllStreams();
 
 			// TODO makes external reporting obsolete?
@@ -129,11 +121,11 @@ public class Main {
 					(IfTree.count + IfdefTree.count + IfndefTree.count),
 					ElifTree.count,
 					ElseTree.count,
-					CPPAnalyzer.endifCount,
-					CPPAnalyzer.textSize,
+					cppAnalyzer.endifCount,
+					cppAnalyzer.textSize,
 					Configuration.LINE_SEPARATOR
 					));
-			FeatureTable.writeXmlTo(1, xmlOut);
+			cppAnalyzer.featureTable.writeXmlTo(1, xmlOut);
 			logger.writeInfo("Finished write-back of xml output!");
 			xmlOut.write("</fcreport>" + Configuration.LINE_SEPARATOR);
 			// @formatter:on
@@ -255,7 +247,6 @@ public class Main {
 						break;
 					}
 					modeFunction.apply(userConf);
-					FeatureTable.reinit();
 				}
 			});
 		}
